@@ -2,15 +2,15 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
-        AWS_DEFAULT_REGION = 'us-east-1'
+        AWS_ACCESS_KEY_ID = credentials('aws-credentials')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-credentials')
+        AWS_DEFAULT_REGION = 'us-east-1' // Change this if you're using a different AWS region
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/your-username/cloudformation-deploy.git', credentialsId: 'github-token'
+                git url: 'https://github.com/Sanit-Wasnik/cloudformation-deploy.git', credentialsId: 'github-token'
             }
         }
 
@@ -29,6 +29,15 @@ pipeline {
                     --capabilities CAPABILITY_NAMED_IAM
                 '''
             }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ CloudFormation stack deployed successfully!'
+        }
+        failure {
+            echo '❌ Deployment failed. Check logs for details.'
         }
     }
 }
